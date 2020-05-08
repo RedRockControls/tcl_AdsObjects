@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="Test_WriteBySymbolName" Id="{5311daf6-9f8e-00c7-03d0-f7ac73ec095f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_WriteBySymbolName EXTENDS TUnitTestBase
+VAR
+    AdsWriteBySymbolName : TAdsWriteBySymbolName;
+    ValueToWrite : INT := 3456;
+    WriteResult : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{4c614834-9254-0f9a-1091-d1a32b7be2b4}">
+      <Declaration><![CDATA[METHOD  Execute
+VAR_INST
+    ScanCount : DINT;
+    State: INT;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        ValueToWrite := 3456;
+        WriteResult := 0;
+        ScanCount := 0;
+    
+        AdsWriteBySymbolName.Execute(
+            AmsNetId:= '', 
+            Port:= 851, 
+            SymbolName:= 'PB_TestRunner.Test_WriteBySymbolName.WriteResult', 
+            WriteDataAddress:= ADR(ValueToWrite), 
+            WriteDataLength:= SIZEOF(ValueToWrite), 
+            KeepSymbolHandle:= FALSE);
+        Test_Started();
+        State := 10;
+        
+    10:
+        ScanCount := ScanCount + 1;
+        IF NOT AdsWriteBySymbolName.ExecutionResult.Busy THEN
+            State := 20;    
+		END_IF
+        
+    20:
+        Assertion.AssertEquals_INT(
+            Expected     := 3456,
+            Actual       := WriteResult,
+            ObjectName   := _TestName,
+            Variablename := 'WriteResult'); 
+ 
+        Test_Finished();
+        State := 0;
+END_CASE
+
+AdsWriteBySymbolName();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

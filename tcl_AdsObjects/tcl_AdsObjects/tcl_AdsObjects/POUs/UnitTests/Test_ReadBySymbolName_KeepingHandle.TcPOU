@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="Test_ReadBySymbolName_KeepingHandle" Id="{9946ec85-dcda-05bf-0580-cea8be438229}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_ReadBySymbolName_KeepingHandle EXTENDS TUnitTestBase
+VAR
+    AdsReadBySymbolName : TAdsReadBySymbolName;
+    ValueToRead : INT;
+    ReadResult  : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{fe902a3e-b423-00f2-3bb8-81efa83930e1}">
+      <Declaration><![CDATA[METHOD  Execute
+VAR_INST
+    ScanCount : DINT;
+    State: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        ValueToRead := 1234;
+        ReadResult := 0;
+        ScanCount := 0;
+    
+        AdsReadBySymbolName.Execute(
+            AmsNetId:= '', 
+            Port:= 851, 
+            SymbolName:= 'PB_TestRunner.Test_ReadBySymbolName_KeepingHandle.ValueToRead', 
+            ReadDataAddress:= ADR(ReadResult), 
+            ReadDataLength:= SIZEOF(ReadResult), 
+            KeepSymbolHandle:= TRUE);
+        Test_Started();
+        State := 10;
+        
+    10:
+        ScanCount := ScanCount + 1;
+        IF NOT AdsReadBySymbolName.ExecutionResult.Busy THEN
+            State := 20;    
+		END_IF
+        
+    20:
+        Assertion.AssertEquals_INT(
+            Expected     := 1234,
+            Actual       := ReadResult,
+            ObjectName   := _TestName,
+            Variablename := 'ReadResult'); 
+ 
+        Test_Finished();
+        State := 0;
+END_CASE
+
+AdsReadBySymbolName();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
+  <POU Name="TAdsRead" Id="{58f6bcea-8104-4956-ae95-3413ce461b25}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TAdsRead
+VAR
+    Execution : TExecution;
+    AdsRead1 : ADSREAD := (TMOUT := T#2S);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[AdsRead1(
+	NETID:= , 
+	PORT:= , 
+	IDXGRP:= , 
+	IDXOFFS:= , 
+	LEN:= , 
+	DESTADDR:= , 
+	READ:= Execution.Starting, 
+	TMOUT:= , 
+	BUSY=> , 
+	ERR=> , 
+	ERRID=> );
+
+    
+IF Execution.Starting THEN
+    Execution.SetBusy();
+END_IF
+IF Execution.Busy AND NOT AdsRead1.BUSY THEN
+    IF AdsRead1.ERR THEN
+        Execution.SetError(AdsRead1.ERRID);
+    ELSE
+        Execution.SetDone();
+	END_IF
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{27ab2939-d629-482d-b359-f86144e5ccf1}">
+      <Declaration><![CDATA[METHOD Execute : BOOL
+VAR_INPUT
+	AmsNetId:T_AmsNetid;
+	Port:T_AmsPort;
+	IndexGroup:UDINT; 
+	IndexOffset:UDINT;
+	DataLength:UDINT; 
+	DataAddress:PVOID; 
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AdsRead1.NETID      := AmsNetId;
+AdsRead1.PORT       := Port;
+AdsRead1.IDXGRP     := IndexGroup;
+AdsRead1.IDXOFFS    := IndexOffset;
+AdsRead1.LEN        := DataLength;
+AdsRead1.DESTADDR   := DataAddress;
+
+Execute := Execution.Start();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ExecutionResult" Id="{2c86a2d0-0e71-4e17-b0f8-f799e350876d}">
+      <Declaration><![CDATA[PROPERTY ExecutionResult : IExecutionResult]]></Declaration>
+      <Get Name="Get" Id="{babe62a8-694f-4fc4-8cb0-2753944348e5}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ExecutionResult := Execution;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

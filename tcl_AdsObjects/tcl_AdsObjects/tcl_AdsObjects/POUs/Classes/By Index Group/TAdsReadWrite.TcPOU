@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
+  <POU Name="TAdsReadWrite" Id="{5aec252a-cd25-0680-3f48-2fefdad531b3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TAdsReadWrite
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+    AdsReadWrite : ADSRDWRT;
+    Execution : TExecution;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[AdsReadWrite(
+	NETID:= , 
+	PORT:= , 
+	IDXGRP:= , 
+	IDXOFFS:= , 
+	WRITELEN:= , 
+	READLEN:= , 
+	SRCADDR:= , 
+	DESTADDR:= , 
+	WRTRD:= Execution.Starting, 
+	TMOUT:= , 
+	BUSY=> , 
+	ERR=> , 
+	ERRID=> );
+    
+IF Execution.Starting THEN
+    Execution.SetBusy();
+END_IF
+IF Execution.Busy AND NOT AdsReadWrite.BUSY THEN
+    IF AdsReadWrite.ERR THEN
+        Execution.SetError(AdsReadWrite.ERRID);
+    ELSE
+        Execution.SetDone();
+	END_IF
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{3b6f6d27-4076-0e86-0c12-92bfcd385060}">
+      <Declaration><![CDATA[METHOD Execute : BOOL
+VAR_INPUT
+    AmsNetId             : T_AmsNetID;
+    Port                 : T_AmsPort;
+    IndexGroup           : UDINT;
+    IndexOffset          : UDINT; 
+    ArgsAddress          : PVOID; 
+    ArgsLength           : UDINT; 
+    ReturnValueAddress   : PVOID; 
+    ReturnValueLength    : UDINT; 
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Execution.Start() THEN
+    AdsReadWrite.NETID    := AmsNetId;
+    AdsReadWrite.PORT     := Port;
+    AdsReadWrite.IDXGRP   := IndexGroup;
+    AdsReadWrite.IDXOFFS  := IndexOffset;
+    // Data to be written...
+    AdsReadWrite.SRCADDR  := ArgsAddress;
+    AdsReadWrite.WRITELEN := ArgsLength;
+    // Data returned...
+    AdsReadWrite.DESTADDR := ReturnValueAddress;
+    AdsReadWrite.READLEN  := ReturnValueLength;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ExecutionResult" Id="{c61d60c8-81bd-0935-03bc-90d31f301497}">
+      <Declaration><![CDATA[PROPERTY ExecutionResult : IExecutionResult]]></Declaration>
+      <Get Name="Get" Id="{00804ebf-72f7-0d30-3576-8dfddec5d3ed}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ExecutionResult := Execution;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

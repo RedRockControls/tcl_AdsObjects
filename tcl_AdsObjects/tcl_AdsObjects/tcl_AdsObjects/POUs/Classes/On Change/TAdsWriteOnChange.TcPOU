@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+  <POU Name="TAdsWriteOnChange" Id="{5fdd8e99-ee40-02c3-2a5f-1dd94e921c5a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TAdsWriteOnChange
+VAR
+    DataAddress : PVOID;
+    DataLength : UDINT;
+    PollTime : LREAL; // seconds
+    
+    AmsNetId : T_AmsNetID;
+    AmsPort : T_AmsPort;
+    SymbolNameToWriteTo : T_Maxstring;
+    
+    StructureMonitor : TStructureMonitor;
+    ValueMonitor : TValueMonitorEx;
+    OnTimer_Poll : TOnTimer(PresetTime := 0.0);
+    OnTimer_DisableOnError : TOnTimer(PresetTime := 30.0);
+    AdsWriteBySymbolName : TAdsWriteBySymbolName;
+    CommsError : BOOL;
+    pBuffer : POINTER TO BYTE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF DataAddress = 0 OR DataLength = 0 OR pBuffer = 0 THEN
+    RETURN;
+END_IF
+
+// Disable comms for 30s on comms error to avoid flooding ADS...
+IF AdsWriteBySymbolName.ExecutionResult.Error THEN
+    CommsError := TRUE;
+END_IF
+
+IF OnTimer_DisableOnError.Delay(CommsError) THEN
+    CommsError := FALSE;
+END_IF
+
+// Poll timer:
+IF OnTimer_Poll.Delay(AdsWriteBySymbolName.ExecutionResult.Ready AND NOT CommsError) THEN
+    
+    // Detect any change...
+    ValueMonitor.Test()
+    StructureMonitor.Test(
+        StructureAddress := DataAddress,
+        StructureSize    := DataLength);
+               
+    // Write data...
+    IF StructureMonitor.Changed THEN
+        // Copy data to a buffer - it might have changed before we get round to sending it...
+        MEMCPY(
+            destAddr := pBuffer,
+            srcAddr  := DataAddress,
+            n        := DataLength);
+            
+        // send the data...    
+        AdsWriteBySymbolName.Execute(
+            AmsNetId         := AmsNetId, 
+            Port             := AmsPort, 
+            SymbolName       := SymbolNameToWriteTo, 
+            WriteDataAddress := pBuffer,   
+            WriteDataLength  := DataLength,
+            KeepSymbolHandle := TRUE);
+    END_IF
+END_IF
+
+AdsWriteBySymbolName();
+
+
+]]></ST>
+    </Implementation>
+    <Property Name="ExecutionResult" Id="{dfc37c49-6fcf-0008-3190-f6b2b3d1d80d}">
+      <Declaration><![CDATA[PROPERTY ExecutionResult : IExecutionResult]]></Declaration>
+      <Get Name="Get" Id="{dbd9cdb3-8c56-0071-07b7-243512d4a579}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ExecutionResult := AdsWriteBySymbolName.ExecutionResult;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_exit" Id="{3de912a9-1ec3-0e58-3294-b3ac4b3faca0}">
+      <Declaration><![CDATA[METHOD FB_exit : BOOL
+VAR_INPUT
+	bInCopyCode : BOOL; // if TRUE, the exit method is called for exiting an instance that is copied afterwards (online change).
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT bInCopyCode THEN
+    __DELETE(pBuffer);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Initialise" Id="{e21f748b-e43e-0b2f-39cd-d8d74c40335a}">
+      <Declaration><![CDATA[METHOD Initialise
+VAR_INPUT
+    DataAddress : PVOID;
+    DataLength : UDINT;
+    PollTime : LREAL; // seconds
+    
+    AmsNetId : T_AmsNetID;
+    AmsPort : T_AmsPort;
+    SymbolNameToWriteTo : T_Maxstring;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.DataAddress         :=   DataAddress; 
+THIS^.DataLength          :=   DataLength;
+THIS^.PollTime            :=   PollTime; 
+
+THIS^.AmsNetId            :=   AmsNetId;
+THIS^.AmsPort             :=   AmsPort; 
+THIS^.SymbolNameToWriteTo :=   SymbolNameToWriteTo; 
+
+pBuffer := __NEW(BYTE,DataLength);
+    
+    ]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
