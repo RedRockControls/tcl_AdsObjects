@@ -6,21 +6,12 @@ VAR
     AdsWriteBySymbolName : TAdsWriteBySymbolName;
     ValueToWrite : INT := 3456;
     WriteResult : INT;
-END_VAR
-]]></Declaration>
-    <Implementation>
-      <ST><![CDATA[]]></ST>
-    </Implementation>
-    <Method Name="Execute" Id="{e07ffed2-659a-064a-212e-6e2f688b6b9c}">
-      <Declaration><![CDATA[METHOD  Execute
-VAR_INST
     ScanCount : DINT;
     State: INT;
 END_VAR
-
 ]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CASE State OF
+    <Implementation>
+      <ST><![CDATA[CASE State OF
     0:
         ValueToWrite := 3456;
         WriteResult := 0;
@@ -55,7 +46,6 @@ END_CASE
 
 AdsWriteBySymbolName();
 ]]></ST>
-      </Implementation>
-    </Method>
+    </Implementation>
   </POU>
 </TcPlcObject>

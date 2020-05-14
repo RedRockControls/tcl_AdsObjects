@@ -6,19 +6,12 @@ VAR
     AdsReadWriteBySymbolName : TAdsReadWriteBySymbolName;
     TestInteger : TInteger;
     ReadWriteResult : INT;    
+    ScanCount : DINT;
+    State: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
-    </Implementation>
-    <Method Name="Execute" Id="{3d05a89d-0787-03ab-1192-de4f6c22f97c}">
-      <Declaration><![CDATA[METHOD  Execute
-VAR_INST
-    ScanCount : DINT;
-    State: INT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CASE State OF
+      <ST><![CDATA[CASE State OF
     0:
         TestInteger.Init(1111);
         ReadWriteResult := 0;
@@ -56,7 +49,6 @@ END_CASE
 
 AdsReadWriteBySymbolName();
 ]]></ST>
-      </Implementation>
-    </Method>
+    </Implementation>
   </POU>
 </TcPlcObject>

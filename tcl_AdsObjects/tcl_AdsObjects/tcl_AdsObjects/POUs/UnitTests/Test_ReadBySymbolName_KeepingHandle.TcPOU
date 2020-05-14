@@ -6,19 +6,12 @@ VAR
     AdsReadBySymbolName : TAdsReadBySymbolName;
     ValueToRead : INT;
     ReadResult  : INT;
+    ScanCount : DINT;
+    State: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
-    </Implementation>
-    <Method Name="Execute" Id="{fe902a3e-b423-00f2-3bb8-81efa83930e1}">
-      <Declaration><![CDATA[METHOD  Execute
-VAR_INST
-    ScanCount : DINT;
-    State: INT;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[CASE State OF
+      <ST><![CDATA[CASE State OF
     0:
         ValueToRead := 1234;
         ReadResult := 0;
@@ -53,7 +46,6 @@ END_CASE
 
 AdsReadBySymbolName();
 ]]></ST>
-      </Implementation>
-    </Method>
+    </Implementation>
   </POU>
 </TcPlcObject>
