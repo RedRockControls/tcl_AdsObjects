@@ -18,8 +18,8 @@
     <Released>false</Released>
     <Title>tcl_AdsObjects</Title>
     <Author>R Christopher</Author>
-    <Description>Unit tests updated</Description>
-    <ProjectVersion>1.0.1.0</ProjectVersion>
+    <Description>Typo corrected</Description>
+    <ProjectVersion>1.0.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{b2d1a5b0-32d7-4314-b073-3ef844283ec3}</Id>
@@ -98,8 +98,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="POUs\UnitTests\Example" />
     <Folder Include="Visualisation" />
+    <Folder Include="POUs\UnitTests\Example" />
     <Folder Include="POUs\Classes" />
     <Folder Include="POUs\Classes\By Index Group" />
     <Folder Include="POUs\Classes\By Symbol Name" />
@@ -168,13 +168,9 @@
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="tcl_Execution">
-      <DefaultResolution>tcl_Execution, * (Red Rock Controls Limited)</DefaultResolution>
-      <Namespace>tcl_Execution</Namespace>
-    </PlaceholderReference>
-    <PlaceholderReference Include="tcl_System">
-      <DefaultResolution>tcl_System, * (Red Rock Controls Limited)</DefaultResolution>
-      <Namespace>tcl_System</Namespace>
+    <PlaceholderReference Include="tcl_BaseClasses">
+      <DefaultResolution>tcl_BaseClasses, * (Red Rock Controls Limited)</DefaultResolution>
+      <Namespace>tcl_BaseClasses</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="tcl_UnitTest">
       <DefaultResolution>tcl_UnitTest, * (Red Rock Controls Limited)</DefaultResolution>

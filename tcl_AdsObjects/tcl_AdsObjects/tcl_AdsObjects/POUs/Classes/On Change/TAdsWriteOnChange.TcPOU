@@ -38,7 +38,6 @@ END_IF
 IF OnTimer_Poll.Delay(AdsWriteBySymbolName.ExecutionResult.Ready AND NOT CommsError) THEN
     
     // Detect any change...
-    ValueMonitor.Test()
     StructureMonitor.Test(
         StructureAddress := DataAddress,
         StructureSize    := DataLength);
