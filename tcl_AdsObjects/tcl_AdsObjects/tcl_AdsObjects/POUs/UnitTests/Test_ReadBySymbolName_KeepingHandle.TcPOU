@@ -29,7 +29,7 @@ END_VAR
         
     10:
         ScanCount := ScanCount + 1;
-        IF NOT AdsReadBySymbolName.ExecutionResult.Busy THEN
+        IF NOT AdsReadBySymbolName.Execution.Busy THEN
             State := 20;    
 		END_IF
         

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
   <POU Name="TAdsWrite" Id="{0518a10c-18cf-4c41-b7e4-3dad0dec5061}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TAdsWrite
 VAR
-    Execution : TExecution;
+    _Execution : TExecution;
     AdsWrite1 : ADSWRITE := (TMOUT := T#2S);
 END_VAR
 ]]></Declaration>
@@ -15,20 +15,20 @@ END_VAR
 	IDXOFFS:= , 
 	LEN:= , 
 	SRCADDR:= , 
-	WRITE:= Execution.Starting, 
+	WRITE:= _Execution.Starting, 
 	TMOUT:= , 
 	BUSY=> , 
 	ERR=> , 
 	ERRID=> );
     
-IF Execution.Starting THEN
-    Execution.SetBusy();
+IF _Execution.Starting THEN
+    _Execution.SetBusy();
 END_IF
-IF Execution.Busy AND NOT AdsWrite1.BUSY THEN
+IF _Execution.Busy AND NOT AdsWrite1.BUSY THEN
     IF AdsWrite1.ERR THEN
-        Execution.SetError(AdsWrite1.ERRID);
+        _Execution.SetError(AdsWrite1.ERRID);
     ELSE
-        Execution.SetDone();
+        _Execution.SetDone();
 	END_IF
 END_IF]]></ST>
     </Implementation>
@@ -50,18 +50,18 @@ AdsWrite1.IDXGRP := IndexGroup;
 AdsWrite1.IDXOFFS := IndexOffset;
 AdsWrite1.LEN := DataLength;
 AdsWrite1.SRCADDR := DataAddress;
-Execute := Execution.Start();
+Execute := _Execution.Start();
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="ExecutionResult" Id="{587b581d-2649-48ad-b252-d24722c9f199}">
-      <Declaration><![CDATA[PROPERTY ExecutionResult : IExecutionResult]]></Declaration>
+    <Property Name="Execution" Id="{587b581d-2649-48ad-b252-d24722c9f199}">
+      <Declaration><![CDATA[PROPERTY Execution : IExecution]]></Declaration>
       <Get Name="Get" Id="{2af0530e-1a27-472a-aea5-27a80db99102}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ExecutionResult := Execution;]]></ST>
+          <ST><![CDATA[Execution := _Execution;]]></ST>
         </Implementation>
       </Get>
     </Property>

@@ -18,8 +18,8 @@
     <Released>false</Released>
     <Title>tcl_AdsObjects</Title>
     <Author>R Christopher</Author>
-    <Description>Typo corrected</Description>
-    <ProjectVersion>1.0.2.0</ProjectVersion>
+    <Description>IExecutionResult removed</Description>
+    <ProjectVersion>1.0.3.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{b2d1a5b0-32d7-4314-b073-3ef844283ec3}</Id>

@@ -3,7 +3,7 @@
   <POU Name="TAdsReadWriteBySymbolName" Id="{13f7dcd6-ccb9-0900-2fd9-3c87339f9e7d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TAdsReadWriteBySymbolName
 VAR
-    Execution : TExecution;
+    _Execution : TExecution;
     StateMonitor : TValueMonitor;
     State : INT;
 
@@ -33,8 +33,8 @@ END_VAR]]></Declaration>
       <ST><![CDATA[StateMonitor.Test(State);
 CASE State OF
     sInit:
-        IF Execution.Starting THEN
-            Execution.SetBusy();
+        IF _Execution.Starting THEN
+            _Execution.SetBusy();
             RetryCounter.Reset();
             IF SymbolHandle = 0 THEN
                 State := sGetHandle;
@@ -56,11 +56,11 @@ CASE State OF
                 ReturnValueAddress  := ADR(SymbolHandle), 
                 ReturnValueLength   := SIZEOF(SymbolHandle));
         ELSE
-            IF AdsReadWrite_GetSymHandle.ExecutionResult.Done THEN
+            IF AdsReadWrite_GetSymHandle.Execution.Done THEN
                 State := sReadWrite;
 			END_IF
-            IF AdsReadWrite_GetSymHandle.ExecutionResult.Error THEN
-                Execution.SetError(AdsReadWrite_GetSymHandle.ExecutionResult.ErrorId);
+            IF AdsReadWrite_GetSymHandle.Execution.Error THEN
+                _Execution.SetError(AdsReadWrite_GetSymHandle.Execution.ErrorId);
                 SymbolHandle := 0;
                 State := sInit;
 			END_IF
@@ -80,23 +80,23 @@ CASE State OF
                 ReturnValueLength  := ReadDataLength);
             
         ELSE
-            IF AdsReadWrite_ToSymbol.ExecutionResult.Done THEN
+            IF AdsReadWrite_ToSymbol.Execution.Done THEN
                 IF KeepSymbolHandle THEN
-                    Execution.SetDone();
+                    _Execution.SetDone();
                     State := sInit;
                 ELSE
                     State := sReleaseHandle;
 				END_IF
                 
-            ELSIF AdsReadWrite_ToSymbol.ExecutionResult.Error THEN
+            ELSIF AdsReadWrite_ToSymbol.Execution.Error THEN
                 // Detect if it failed due to an online change invalidating the symbol handle...
                 IF 
-                    AdsReadWrite_ToSymbol.ExecutionResult.ErrorId = E_AdsErr.DEVICE_SYMBOLVERSIONINVALID 
+                    AdsReadWrite_ToSymbol.Execution.ErrorId = E_AdsErr.DEVICE_SYMBOLVERSIONINVALID 
                  OR
-                    AdsReadWrite_ToSymbol.ExecutionResult.ErrorId = E_AdsErr.DEVICE_SYMBOLNOTACTIVE 
+                    AdsReadWrite_ToSymbol.Execution.ErrorId = E_AdsErr.DEVICE_SYMBOLNOTACTIVE 
                 THEN
                     IF RetryCounter.Value > 0 THEN
-                        Execution.SetError(AdsReadWrite_ToSymbol.ExecutionResult.ErrorId);
+                        _Execution.SetError(AdsReadWrite_ToSymbol.Execution.ErrorId);
                         SymbolHandle := 0;
                         State := sInit;
                     ELSE
@@ -121,18 +121,18 @@ CASE State OF
                 DataLength      := 0, 
                 DataAddress     := 0);
         ELSE
-            IF AdsWrite_ReleaseSymHandle.ExecutionResult.Done THEN
+            IF AdsWrite_ReleaseSymHandle.Execution.Done THEN
                 // Handle write error to the symbol...
-                IF AdsReadWrite_ToSymbol.ExecutionResult.Error THEN
-                    Execution.SetError(AdsReadWrite_ToSymbol.ExecutionResult.ErrorId);
+                IF AdsReadWrite_ToSymbol.Execution.Error THEN
+                    _Execution.SetError(AdsReadWrite_ToSymbol.Execution.ErrorId);
                 ELSE
-                    Execution.SetDone();
+                    _Execution.SetDone();
 				END_IF
                 SymbolHandle := 0;
                 State := sInit;
-            ELSIF AdsWrite_ReleaseSymHandle.ExecutionResult.Error THEN
+            ELSIF AdsWrite_ReleaseSymHandle.Execution.Error THEN
                 // Handle release handle error...
-                Execution.SetError(AdsWrite_ReleaseSymHandle.ExecutionResult.ErrorId);
+                _Execution.SetError(AdsWrite_ReleaseSymHandle.Execution.ErrorId);
                 SymbolHandle := 0;
                 State := sInit;
 			END_IF
@@ -168,18 +168,18 @@ THIS^.WriteDataAddress  := WriteDataAddress;
 THIS^.WriteDataLength   := WriteDataLength;
 THIS^.KeepSymbolHandle  := KeepSymbolHandle;
 
-Execute := Execution.Start();
+Execute := _Execution.Start();
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="ExecutionResult" Id="{4f62956f-a162-0900-311d-9b0770251f12}">
-      <Declaration><![CDATA[PROPERTY ExecutionResult : IExecutionResult]]></Declaration>
+    <Property Name="Execution" Id="{4f62956f-a162-0900-311d-9b0770251f12}">
+      <Declaration><![CDATA[PROPERTY Execution : IExecution]]></Declaration>
       <Get Name="Get" Id="{5a2dab17-8cca-0dc8-3846-dd0376db8641}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ExecutionResult := Execution;]]></ST>
+          <ST><![CDATA[Execution := _Execution;]]></ST>
         </Implementation>
       </Get>
     </Property>
