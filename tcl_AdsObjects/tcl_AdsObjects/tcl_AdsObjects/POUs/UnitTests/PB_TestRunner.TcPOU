@@ -14,7 +14,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[tcl_UnitTest.TestFramework.TestRunner();]]></ST>
+      <ST><![CDATA[tcl_SimpleUnitTestLibrary.TestFramework.TestRunner();]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

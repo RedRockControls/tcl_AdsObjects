@@ -24,7 +24,7 @@ END_VAR
             WriteDataAddress:= ADR(ValueToWrite), 
             WriteDataLength:= SIZEOF(ValueToWrite), 
             KeepSymbolHandle:= FALSE);
-        Test_Started();
+
         State := 10;
         
     10:
@@ -40,7 +40,7 @@ END_VAR
             ObjectName   := _TestName,
             Variablename := 'WriteResult'); 
  
-        Test_Finished();
+        TestFinished();
         State := 0;
 END_CASE
 

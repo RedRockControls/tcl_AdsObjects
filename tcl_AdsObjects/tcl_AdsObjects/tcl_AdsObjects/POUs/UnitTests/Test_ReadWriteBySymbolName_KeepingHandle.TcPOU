@@ -27,7 +27,7 @@ END_VAR
             WriteDataLength:= 0, 
             KeepSymbolHandle:= TRUE);
 
-        Test_Started();
+
         State := 10;
         
     10:
@@ -43,7 +43,7 @@ END_VAR
             ObjectName   := _TestName,
             Variablename := 'ReadWriteResult'); 
  
-        Test_Finished();
+        TestFinished();
         State := 0;
 END_CASE
 

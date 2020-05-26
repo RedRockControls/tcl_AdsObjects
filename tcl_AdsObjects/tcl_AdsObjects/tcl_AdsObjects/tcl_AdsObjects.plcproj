@@ -18,8 +18,8 @@
     <Released>false</Released>
     <Title>tcl_AdsObjects</Title>
     <Author>R Christopher</Author>
-    <Description>IExecutionResult removed</Description>
-    <ProjectVersion>1.0.3.0</ProjectVersion>
+    <Description>Unit tests updated</Description>
+    <ProjectVersion>1.0.4.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{b2d1a5b0-32d7-4314-b073-3ef844283ec3}</Id>
@@ -172,9 +172,9 @@
       <DefaultResolution>tcl_BaseClasses, * (Red Rock Controls Limited)</DefaultResolution>
       <Namespace>tcl_BaseClasses</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="tcl_UnitTest">
-      <DefaultResolution>tcl_UnitTest, * (Red Rock Controls Limited)</DefaultResolution>
-      <Namespace>tcl_UnitTest</Namespace>
+    <PlaceholderReference Include="tcl_SimpleUnitTestLibrary">
+      <DefaultResolution>tcl_SimpleUnitTestLibrary, * (Red Rock Controls Limited)</DefaultResolution>
+      <Namespace>tcl_SimpleUnitTestLibrary</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
