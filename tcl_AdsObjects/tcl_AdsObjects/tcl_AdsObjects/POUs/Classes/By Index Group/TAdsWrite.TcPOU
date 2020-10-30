@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
   <POU Name="TAdsWrite" Id="{0518a10c-18cf-4c41-b7e4-3dad0dec5061}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TAdsWrite
 VAR
@@ -8,7 +8,11 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[AdsWrite1(
+      <ST><![CDATA[IF _Execution.Aborting THEN
+    _Execution.SetAborted();
+END_IF
+
+AdsWrite1(
 	NETID:= , 
 	PORT:= , 
 	IDXGRP:= , 

@@ -18,8 +18,8 @@
     <Released>false</Released>
     <Title>tcl_AdsObjects</Title>
     <Author>R Christopher</Author>
-    <Description>Unit tests updated</Description>
-    <ProjectVersion>1.0.4.0</ProjectVersion>
+    <Description>Execution.Aborting handling added</Description>
+    <ProjectVersion>1.0.5.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{b2d1a5b0-32d7-4314-b073-3ef844283ec3}</Id>
@@ -86,19 +86,19 @@
     <Compile Include="POUs\UnitTests\Test_WriteBySymbolName_KeepingHandle.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Version\Global_Version.TcGVL">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Visualisation\Visualization.TcVIS">
+    <Compile Include="POUs\UnitTests\Visualisation\Visualization.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="Version\Global_Version.TcGVL">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Visualization Manager.TcVMO">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Visualisation" />
+    <Folder Include="POUs\UnitTests\Visualisation" />
     <Folder Include="POUs\UnitTests\Example" />
     <Folder Include="POUs\Classes" />
     <Folder Include="POUs\Classes\By Index Group" />

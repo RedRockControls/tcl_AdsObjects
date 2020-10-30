@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
   <POU Name="TAdsReadWriteBySymbolName" Id="{13f7dcd6-ccb9-0900-2fd9-3c87339f9e7d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TAdsReadWriteBySymbolName
 VAR
@@ -30,7 +30,12 @@ VAR CONSTANT
     sReleaseHandle : INT := 3;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[StateMonitor.Test(State);
+      <ST><![CDATA[IF _Execution.Aborting THEN
+    State := sInit;
+    _Execution.SetAborted();
+END_IF
+
+StateMonitor.Test(State);
 CASE State OF
     sInit:
         IF _Execution.Starting THEN

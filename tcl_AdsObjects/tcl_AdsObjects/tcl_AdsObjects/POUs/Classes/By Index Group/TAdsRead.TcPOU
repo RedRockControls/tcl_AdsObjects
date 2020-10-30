@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
   <POU Name="TAdsRead" Id="{58f6bcea-8104-4956-ae95-3413ce461b25}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TAdsRead
 VAR
@@ -8,7 +8,11 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[AdsRead1(
+      <ST><![CDATA[IF _Execution.Aborting THEN
+    _Execution.SetAborted();
+END_IF
+
+AdsRead1(
 	NETID:= , 
 	PORT:= , 
 	IDXGRP:= , 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.3">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
   <POU Name="Test_WriteBySymbolName_KeepingHandle" Id="{6428be7e-b511-0587-11db-4115f97c9bd2}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Test_WriteBySymbolName_KeepingHandle EXTENDS TUnitTestBase
 VAR
@@ -37,7 +37,6 @@ END_VAR
         Assertion.AssertEquals_INT(
             Expected     := 3456,
             Actual       := WriteResult,
-            ObjectName   := _TestName,
             Variablename := 'WriteResult'); 
  
         TestFinished();
