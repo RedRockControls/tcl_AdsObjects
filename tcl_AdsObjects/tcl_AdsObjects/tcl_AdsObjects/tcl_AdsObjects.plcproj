@@ -15,20 +15,21 @@
     <LibraryReferences>{d8b95cfb-bd21-45b9-8e6d-e91308ab1e50}</LibraryReferences>
     <CombineIds>true</CombineIds>
     <Company>Red Rock Controls Limited</Company>
-    <Released>false</Released>
+    <Released>true</Released>
     <Title>tcl_AdsObjects</Title>
     <Author>R Christopher</Author>
-    <Description>Execution.Aborting handling added</Description>
-    <ProjectVersion>1.0.5.0</ProjectVersion>
+    <Description>Dependancy on Base Class TC_EVENTS definitions removed.
+Rebuilt using 3.1.4024.11</Description>
+    <ProjectVersion>1.0.6.0</ProjectVersion>
     <LibraryCategories>
-      <LibraryCategory xmlns="">
-        <Id>{b2d1a5b0-32d7-4314-b073-3ef844283ec3}</Id>
+      <LibraryCategory>
+        <Id>{0d08a09c-9493-4b37-a26c-544e7211ff2d}</Id>
         <Version>1.0.0.0</Version>
-        <DefaultName>tcl_BaseClasses</DefaultName>
+        <DefaultName>tcl_ClassLibraries</DefaultName>
       </LibraryCategory>
     </LibraryCategories>
     <SelectedLibraryCategories>
-      <Id xmlns="">{b2d1a5b0-32d7-4314-b073-3ef844283ec3}</Id>
+      <Id>{0d08a09c-9493-4b37-a26c-544e7211ff2d}</Id>
     </SelectedLibraryCategories>
   </PropertyGroup>
   <ItemGroup>
