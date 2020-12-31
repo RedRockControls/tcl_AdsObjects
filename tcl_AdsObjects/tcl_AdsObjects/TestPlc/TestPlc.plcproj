@@ -1,79 +1,75 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <FileVersion>1.0.0.0</FileVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{efc203d1-beb6-4662-84ba-b0e37bb1a221}</ProjectGuid>
+    <ProjectGuid>{3322eae9-56bd-496c-92a7-c46962f7bbba}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
-    <Name>tcl_AdsObjects</Name>
-    <ProgramVersion>3.1.4022.0</ProgramVersion>
-    <Application>{d64d3c51-ccde-419c-8b0b-0b2803e6019c}</Application>
-    <TypeSystem>{00df99dc-09c7-4fea-aead-c3d7e135892b}</TypeSystem>
-    <Implicit_Task_Info>{40787c4d-3534-47fd-b7bf-0c825213bfb1}</Implicit_Task_Info>
-    <Implicit_KindOfTask>{0e832bb3-0559-4226-b2ec-0a3e2c35cabe}</Implicit_KindOfTask>
-    <Implicit_Jitter_Distribution>{35e697d4-5a9a-4af7-a8c9-ac642605ad23}</Implicit_Jitter_Distribution>
-    <LibraryReferences>{d8b95cfb-bd21-45b9-8e6d-e91308ab1e50}</LibraryReferences>
-    <CombineIds>true</CombineIds>
-    <Company>Red Rock Controls Limited</Company>
-    <Released>false</Released>
-    <Title>tcl_AdsObjects</Title>
-    <Author>R Christopher</Author>
-    <Description>Naming convention updated</Description>
-    <ProjectVersion>1.1.0.0</ProjectVersion>
-    <LibraryCategories>
-      <LibraryCategory>
-        <Id>{0d08a09c-9493-4b37-a26c-544e7211ff2d}</Id>
-        <Version>1.0.0.0</Version>
-        <DefaultName>tcl_ClassLibraries</DefaultName>
-      </LibraryCategory>
-    </LibraryCategories>
-    <SelectedLibraryCategories>
-      <Id>{0d08a09c-9493-4b37-a26c-544e7211ff2d}</Id>
-    </SelectedLibraryCategories>
+    <DownloadApplicationInfo>true</DownloadApplicationInfo>
+    <WriteProductVersion>true</WriteProductVersion>
+    <GenerateTpy>false</GenerateTpy>
+    <Name>TestPlc</Name>
+    <ProgramVersion>3.1.4023.0</ProgramVersion>
+    <Application>{0b382ad0-7b95-408e-8573-e41000287c25}</Application>
+    <TypeSystem>{5fe2bde7-e51f-4162-8387-d2b5bd8a08d2}</TypeSystem>
+    <Implicit_Task_Info>{d530664b-df63-4993-9c6d-9717b637b01a}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{9ae3eed8-8f70-48f3-8e55-ca9d8c6b4574}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{ad2ef5b8-963c-4917-8c9f-2322600063f4}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{c8d99dad-3227-4d70-b797-27f12a2e898d}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GlobalTextList.TcGTLO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\By Index Group\T_AdsRead.TcPOU">
+    <Compile Include="GVLs\Constants.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\By Index Group\T_AdsReadWrite.TcPOU">
+    <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\By Index Group\T_AdsWrite.TcPOU">
+    <Compile Include="POUs\UnitTests\Example\TInteger.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\By Symbol Name\T_AdsReadBySymbolName.TcPOU">
+    <Compile Include="POUs\UnitTests\PB_TestRunner.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\By Symbol Name\T_AdsReadWriteBySymbolName.TcPOU">
+    <Compile Include="POUs\UnitTests\Test_ReadBySymbolName.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\By Symbol Name\T_AdsWriteBySymbolName.TcPOU">
+    <Compile Include="POUs\UnitTests\Test_ReadBySymbolName_KeepingHandle.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\On Change\StructureMonitor\T_StructureMonitor.TcPOU">
+    <Compile Include="POUs\UnitTests\Test_ReadWriteBySymbolName.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Classes\On Change\T_AdsWriteOnChange.TcPOU">
+    <Compile Include="POUs\UnitTests\Test_ReadWriteBySymbolName_KeepingHandle.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Version\Global_Version.TcGVL">
+    <Compile Include="POUs\UnitTests\Test_WriteBySymbolName.TcPOU">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\UnitTests\Test_WriteBySymbolName_KeepingHandle.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\UnitTests\Visualisation\Visualization.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
     <Compile Include="Visualization Manager.TcVMO">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="POUs\Classes" />
-    <Folder Include="POUs\Classes\By Index Group" />
-    <Folder Include="POUs\Classes\By Symbol Name" />
-    <Folder Include="POUs\Classes\On Change\StructureMonitor" />
-    <Folder Include="POUs\Classes\On Change" />
+    <Folder Include="DUTs" />
+    <Folder Include="GVLs" />
+    <Folder Include="POUs\UnitTests" />
+    <Folder Include="POUs\UnitTests\Example" />
+    <Folder Include="POUs\UnitTests\Visualisation" />
+    <Folder Include="VISUs" />
     <Folder Include="POUs" />
-    <Folder Include="Version" />
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="System_VisuElemMeter">
@@ -126,17 +122,13 @@
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="Tc2_Utilities">
-      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc2_Utilities</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="tcl_BaseClasses">
-      <DefaultResolution>tcl_BaseClasses, * (Red Rock Controls Limited)</DefaultResolution>
-      <Namespace>tcl_BaseClasses</Namespace>
+    <PlaceholderReference Include="tcl_AdsObjects">
+      <DefaultResolution>tcl_AdsObjects, * (Red Rock Controls Limited)</DefaultResolution>
+      <Namespace>tcl_AdsObjects</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="tcl_SimpleUnitTestLibrary">
       <DefaultResolution>tcl_SimpleUnitTestLibrary, * (Red Rock Controls Limited)</DefaultResolution>
@@ -144,21 +136,7 @@
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderResolution Include="Tc2_Standard">
-      <Resolution>Tc2_Standard, * (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc2_System">
-      <Resolution>Tc2_System, * (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc2_Utilities">
-      <Resolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc3_Module">
-      <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="tcl_AdsObjects.tmc">
+    <None Include="TestPlc.tmc">
       <SubType>Content</SubType>
     </None>
   </ItemGroup>

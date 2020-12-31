@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <POU Name="PB_TestRunner" Id="{09f9de33-d82f-0072-2dfa-53961fe21211}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PB_TestRunner
+VAR
+    Init : BOOL := TRUE;
+    
+    TestSuite : T_TestSuite;
+    Test_ReadBySymbolName                    : Test_ReadBySymbolName(TestSuite);
+    Test_ReadWriteBySymbolName               : Test_ReadWriteBySymbolName(TestSuite);
+    Test_WriteBySymbolName                   : Test_WriteBySymbolName(TestSuite);
+
+    Test_ReadBySymbolName_KeepingHandle      : Test_ReadBySymbolName_KeepingHandle(TestSuite);
+    Test_ReadWriteBySymbolName_KeepingHandle : Test_ReadWriteBySymbolName_KeepingHandle(TestSuite);
+    Test_WriteBySymbolName_KeepingHandle     : Test_WriteBySymbolName_KeepingHandle(TestSuite);
+    
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF Init THEN
+    Init := FALSE;
+    tcl_SimpleUnitTestLibrary.TestFramework.TestRunner.AddTestSuite(TestSuite);
+END_IF
+
+tcl_SimpleUnitTestLibrary.TestFramework.TestRunner(
+    RunTestsSequentially:= TRUE, 
+    ManualTestRunsOnly:= TRUE);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
