@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <POU Name="PB_TestRunner" Id="{09f9de33-d82f-0072-2dfa-53961fe21211}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM PB_TestRunner
 VAR
     Init : BOOL := TRUE;
+    TestRunner : T_TestRunner;
     
     TestSuite : T_TestSuite;
     Test_ReadBySymbolName                    : Test_ReadBySymbolName(TestSuite);
@@ -17,14 +18,15 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF Init THEN
+      <ST><![CDATA[IF Init OR TestRunner.ReloadTests THEN
+    TestRunner.ReloadTests := FALSE;
     Init := FALSE;
-    tcl_SimpleUnitTestLibrary.TestFramework.TestRunner.AddTestSuite(TestSuite);
+    
+    TestRunner.ClearTests();
+    TestRunner.AddTestSuite(TestSuite);
 END_IF
 
-tcl_SimpleUnitTestLibrary.TestFramework.TestRunner(
-    RunTestsSequentially:= TRUE, 
-    ManualTestRunsOnly:= TRUE);]]></ST>
+TestRunner();]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
