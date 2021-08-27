@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Test_ReadWriteBySymbolName_KeepingHandle" Id="{c87edacf-2958-0c3c-3fd2-f244d98bdb20}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Test_ReadWriteBySymbolName_KeepingHandle EXTENDS T_UnitTestBase
 VAR
@@ -7,7 +7,6 @@ VAR
     TestInteger : TInteger;
     ReadWriteResult : INT;    
     ScanCount : DINT;
-    State: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>

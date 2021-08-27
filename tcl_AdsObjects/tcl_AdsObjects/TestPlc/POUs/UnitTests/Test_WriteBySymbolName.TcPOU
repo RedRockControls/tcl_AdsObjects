@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Test_WriteBySymbolName" Id="{6965ce89-a9f9-0e2d-21d0-c068dda5d1a3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Test_WriteBySymbolName EXTENDS T_UnitTestBase
 VAR
@@ -7,7 +7,6 @@ VAR
     ValueToWrite : INT := 3456;
     WriteResult : INT;
     ScanCount : DINT;
-    State: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>

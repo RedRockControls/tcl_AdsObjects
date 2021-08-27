@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_AdsWriteBySymbolName" Id="{53082c2a-90eb-4e71-93b4-409c3d4e3399}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_AdsWriteBySymbolName
 VAR
@@ -62,7 +62,7 @@ CASE State OF
                 State := sWriteData;
 			END_IF
             IF AdsReadWrite_GetSymHandle.Execution.Error THEN
-                _Execution.SetError(AdsReadWrite_GetSymHandle.Execution.ErrorId);
+                _Execution.SetError(AdsReadWrite_GetSymHandle.Execution.ErrorMsg);
                 SymbolHandle := 0;
                 State := sInit;
 			END_IF
@@ -88,23 +88,15 @@ CASE State OF
 				END_IF
                 
             ELSIF AdsWrite_WriteToSymbol.Execution.Error THEN
-                // Detect if it failed due to an online change invalidating the symbol handle...
-                IF 
-                    AdsWrite_WriteToSymbol.Execution.ErrorId = E_AdsErr.DEVICE_SYMBOLVERSIONINVALID 
-                 OR
-                    AdsWrite_WriteToSymbol.Execution.ErrorId = E_AdsErr.DEVICE_SYMBOLNOTACTIVE 
-                THEN
-                    IF RetryCounter.Value > 0 THEN
-                        _Execution.SetError(AdsWrite_WriteToSymbol.Execution.ErrorId);
-                        SymbolHandle := 0;
-                        State := sInit;
-                    ELSE
-                        RetryCounter.Inc();
-                        SymbolHandle := 0;
-                        State := sGetHandle;
-                    END_IF
-                ELSE
-                    State := sReleaseHandle;
+                // Retry if it failed due to an online change invalidating the symbol handle...
+				IF RetryCounter.Value = 0 THEN
+					RetryCounter.Inc();
+					SymbolHandle := 0;
+					State := sGetHandle;
+				ELSE
+					_Execution.SetError(AdsWrite_WriteToSymbol.Execution.ErrorMsg);
+					SymbolHandle := 0;
+					State := sInit;
 				END_IF
 			END_IF
 		END_IF
@@ -123,7 +115,7 @@ CASE State OF
             IF AdsWrite_ReleaseSymHandle.Execution.Done THEN
                 // Handle write error to the symbol...
                 IF AdsWrite_WriteToSymbol.Execution.Error THEN
-                    _Execution.SetError(AdsWrite_WriteToSymbol.Execution.ErrorId);
+                    _Execution.SetError(AdsWrite_WriteToSymbol.Execution.ErrorMsg);
                 ELSE
                     _Execution.SetDone();
 				END_IF
@@ -131,12 +123,12 @@ CASE State OF
                 State := sInit;
             ELSIF AdsWrite_ReleaseSymHandle.Execution.Error THEN
                 // Handle release handle error...
-                _Execution.SetError(AdsWrite_ReleaseSymHandle.Execution.ErrorId);
+                _Execution.SetError(AdsWrite_ReleaseSymHandle.Execution.ErrorMsg);
                 SymbolHandle := 0;
                 State := sInit;
             ELSIF AdsWrite_WriteToSymbol.Execution.Error THEN
                 // Handle Write To Symbol error...
-                _Execution.SetError(AdsWrite_WriteToSymbol.Execution.ErrorId);
+                _Execution.SetError(AdsWrite_WriteToSymbol.Execution.ErrorMsg);
                 SymbolHandle := 0;
                 State := sInit;
 			END_IF
