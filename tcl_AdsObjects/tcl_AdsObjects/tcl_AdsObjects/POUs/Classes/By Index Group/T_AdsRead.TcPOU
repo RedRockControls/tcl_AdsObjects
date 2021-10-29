@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_AdsRead" Id="{58f6bcea-8104-4956-ae95-3413ce461b25}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_AdsRead
 VAR
@@ -31,11 +31,12 @@ IF _Execution.Starting THEN
 END_IF
 IF _Execution.Busy AND NOT AdsRead1.BUSY THEN
     IF AdsRead1.ERR THEN
-        _Execution.SetError(AdsRead1.ERRID);
+        _Execution.SetError(F_ErrorIdToString(AdsRead1.ERRID));
     ELSE
         _Execution.SetDone();
 	END_IF
-END_IF]]></ST>
+END_IF
+]]></ST>
     </Implementation>
     <Method Name="Execute" Id="{27ab2939-d629-482d-b359-f86144e5ccf1}">
       <Declaration><![CDATA[METHOD Execute : BOOL

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_AdsWrite" Id="{0518a10c-18cf-4c41-b7e4-3dad0dec5061}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_AdsWrite
 VAR
@@ -30,7 +30,7 @@ IF _Execution.Starting THEN
 END_IF
 IF _Execution.Busy AND NOT AdsWrite1.BUSY THEN
     IF AdsWrite1.ERR THEN
-        _Execution.SetError(AdsWrite1.ERRID);
+        _Execution.SetError(F_ErrorIdToString(AdsWrite1.ERRID));
     ELSE
         _Execution.SetDone();
 	END_IF

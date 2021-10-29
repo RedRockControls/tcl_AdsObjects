@@ -18,8 +18,8 @@
     <Released>false</Released>
     <Title>tcl_AdsObjects</Title>
     <Author>R Christopher</Author>
-    <Description>T_Execution.SetError arg changed to ANY</Description>
-    <ProjectVersion>1.1.1.0</ProjectVersion>
+    <Description>T_Execution.SetError arg changed to T_MaxString</Description>
+    <ProjectVersion>1.1.2.0</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory>
         <Id>{0d08a09c-9493-4b37-a26c-544e7211ff2d}</Id>

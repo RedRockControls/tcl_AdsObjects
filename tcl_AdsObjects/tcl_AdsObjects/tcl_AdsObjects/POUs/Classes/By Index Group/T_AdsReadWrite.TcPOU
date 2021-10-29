@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_AdsReadWrite" Id="{5aec252a-cd25-0680-3f48-2fefdad531b3}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_AdsReadWrite
 VAR_INPUT
@@ -36,7 +36,7 @@ IF _Execution.Starting THEN
 END_IF
 IF _Execution.Busy AND NOT AdsReadWrite.BUSY THEN
     IF AdsReadWrite.ERR THEN
-        _Execution.SetError(AdsReadWrite.ERRID);
+        _Execution.SetError(F_ErrorIdToString(AdsReadWrite.ERRID));
     ELSE
         _Execution.SetDone();
 	END_IF
