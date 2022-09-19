@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_RawSymbolInfo" Id="{70e82636-358b-41df-ad60-15cd5ae699ca}">
+    <Declaration><![CDATA[TYPE
+    INTERNAL ST_RawSymbolInfo :
+    STRUCT
+        Address : ULINT;
+        Length  : ULINT;
+    END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Test_ReadWriteBySymbolName_KeepingHandle" Id="{fdb25a73-7908-0b1c-2926-dbfdf5cc9282}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_ReadWriteBySymbolName_KeepingHandle EXTENDS T_UnitTestBase
+VAR
+    AdsPort                  : UINT;
+    AdsReadWriteBySymbolName : T_AdsReadWriteBySymbolName;
+    AdsReadSymbolName        : T_AdsReadSymbolName;
+    TestInteger              : T_Integer;
+    State                    : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Init" Id="{ee8d4b0e-2299-0715-318f-2f97d85fff91}">
+      <Declaration><![CDATA[METHOD Init
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunTest" Id="{ed9bc56a-511e-0d3e-3313-d22f3fb9ccc4}">
+      <Declaration><![CDATA[{attribute 'analysis' := '-33'} // inhibit unused variable warning
+METHOD RunTest
+VAR_OUTPUT
+    TestCompleted : BOOL;
+    TestFailed    : BOOL;
+END_VAR
+VAR_INST
+    SymbolName      : T_MaxString;
+    ReadWriteResult : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        AdsPort := _AppInfo.AdsPort;
+        TestInteger.Init(1111);
+        ReadWriteResult := 0;
+        AdsReadSymbolName.Execute(Address := ADR(TestInteger),
+                                  Length  := SIZEOF(TestInteger),
+                                  PlcPort := AdsPort);
+        State := 10;
+
+    10:
+        IF NOT AdsReadSymbolName.Execution.Busy THEN
+            SymbolName := CONCAT(AdsReadSymbolName.SymbolName, '#Inc');
+            State      := 20;
+        END_IF
+
+    20:
+        AdsReadWriteBySymbolName.Execute(AmsNetId         := '',
+                                         Port             := AdsPort,
+                                         SymbolName       := SymbolName,
+                                         ReadDataAddress  := ADR(ReadWriteResult),
+                                         ReadDataLength   := SIZEOF(ReadWriteResult),
+                                         WriteDataAddress := 0,
+                                         WriteDataLength  := 0,
+                                         KeepSymbolHandle := FALSE);
+
+        State := 30;
+
+    30:
+        IF NOT AdsReadWriteBySymbolName.Execution.Busy THEN
+            State := 40;
+        END_IF
+
+    40:
+        AssertTrue(Source    := TestName,
+                   Condition := (ReadWriteResult = 1112),
+                   Message   := 'ReadWriteResult <> 1112',
+                   Failed    => TestFailed);
+
+        TestCompleted := TRUE;
+END_CASE
+
+AdsReadWriteBySymbolName();
+AdsReadSymbolName();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

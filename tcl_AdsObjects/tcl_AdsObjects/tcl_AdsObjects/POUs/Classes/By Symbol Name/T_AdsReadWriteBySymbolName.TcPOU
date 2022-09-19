@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="T_AdsReadWriteBySymbolName" Id="{13f7dcd6-ccb9-0900-2fd9-3c87339f9e7d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_AdsReadWriteBySymbolName
 VAR
-    _Execution          : T_Execution;
-    StateMonitor        : T_ValueMonitor;
-    State               : INT;
-                        
-	AmsNetId            : T_AmsNetId;
-	Port                : T_AmsPort;
-	SymbolName          : STRING;
-    ReadDataAddress     : PVOID;
-    ReadDataLength      : UDINT;
-    WriteDataAddress    : PVOID;
-    WriteDataLength     : UDINT;    
-    KeepSymbolHandle    : BOOL;  
-	SymbolHandle 	    :	DWORD := 0;
-    RetryCounter        : T_Counter;
-    
+    _Execution   : T_Execution;
+    StateMonitor : T_ValueMonitor;
+    State        : INT;
+
+    AmsNetId         : T_AmsNetId;
+    Port             : T_AmsPort;
+    SymbolName       : T_MaxString;
+    ReadDataAddress  : PVOID;
+    ReadDataLength   : UDINT;
+    WriteDataAddress : PVOID;
+    WriteDataLength  : UDINT;
+    KeepSymbolHandle : BOOL;
+    SymbolHandle     : DWORD := 0;
+    RetryCounter     : T_Counter;
+
     AdsReadWrite_GetSymHandle : T_AdsReadWrite;
     AdsReadWrite_ToSymbol     : T_AdsReadWrite;
     AdsWrite_ReleaseSymHandle : T_AdsWrite;
@@ -28,7 +28,8 @@ VAR CONSTANT
     sGetHandle     : INT := 1;
     sReadWrite     : INT := 2;
     sReleaseHandle : INT := 3;
-END_VAR]]></Declaration>
+END_VAR
+]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF _Execution.Aborting THEN
     State := sInit;
@@ -46,44 +47,42 @@ CASE State OF
             ELSE
                 State := sReadWrite;
             END_IF
-		END_IF
-        
-    sGetHandle:    
+        END_IF
+
+    sGetHandle:
         IF StateMonitor.Changed THEN
             // Get a symbol handle from the runtime...
-            AdsReadWrite_GetSymHandle.Execute(
-                AmsNetId            := AmsNetId, 
-                Port                := Port, 
-                IndexGroup          := ADSIGRP_SYM_HNDBYNAME, 
-                IndexOffset         := 0, 
-                ArgsAddress         := ADR(SymbolName), 
-                ArgsLength          := INT_TO_UDINT(LEN(SymbolName)), 
-                ReturnValueAddress  := ADR(SymbolHandle), 
-                ReturnValueLength   := SIZEOF(SymbolHandle));
+            AdsReadWrite_GetSymHandle.Execute(AmsNetId           := AmsNetId,
+                                              Port               := Port,
+                                              IndexGroup         := ADSIGRP_SYM_HNDBYNAME,
+                                              IndexOffset        := 0,
+                                              ArgsAddress        := ADR(SymbolName),
+                                              ArgsLength         := INT_TO_UDINT(LEN(SymbolName)),
+                                              ReturnValueAddress := ADR(SymbolHandle),
+                                              ReturnValueLength  := SIZEOF(SymbolHandle));
         ELSE
             IF AdsReadWrite_GetSymHandle.Execution.Done THEN
                 State := sReadWrite;
-			END_IF
+            END_IF
             IF AdsReadWrite_GetSymHandle.Execution.Error THEN
                 _Execution.SetError(AdsReadWrite_GetSymHandle.Execution.ErrorMsg);
                 SymbolHandle := 0;
-                State := sInit;
-			END_IF
+                State        := sInit;
+            END_IF
         END_IF
-        
-    sReadWrite:  
+
+    sReadWrite:
         IF StateMonitor.Changed THEN
             // Write the data to the symbol...
-            AdsReadWrite_ToSymbol.Execute(
-                AmsNetId           := AmsNetId, 
-                Port               := Port, 
-                IndexGroup         := ADSIGRP_SYM_VALBYHND, 
-                IndexOffset        := SymbolHandle, 
-                ArgsAddress        := WriteDataAddress, 
-                ArgsLength         := WriteDataLength, 
-                ReturnValueAddress := ReadDataAddress, 
-                ReturnValueLength  := ReadDataLength);
-            
+            AdsReadWrite_ToSymbol.Execute(AmsNetId           := AmsNetId,
+                                          Port               := Port,
+                                          IndexGroup         := ADSIGRP_SYM_VALBYHND,
+                                          IndexOffset        := SymbolHandle,
+                                          ArgsAddress        := WriteDataAddress,
+                                          ArgsLength         := WriteDataLength,
+                                          ReturnValueAddress := ReadDataAddress,
+                                          ReturnValueLength  := ReadDataLength);
+
         ELSE
             IF AdsReadWrite_ToSymbol.Execution.Done THEN
                 IF KeepSymbolHandle THEN
@@ -91,32 +90,31 @@ CASE State OF
                     State := sInit;
                 ELSE
                     State := sReleaseHandle;
-				END_IF
-                
+                END_IF
+
             ELSIF AdsReadWrite_ToSymbol.Execution.Error THEN
                 // Retry if it failed due to an online change invalidating the symbol handle...
-				IF RetryCounter.Value = 0 THEN
-					RetryCounter.Inc();
-					SymbolHandle := 0;
-					State := sGetHandle;
-				ELSE
-					_Execution.SetError(AdsReadWrite_ToSymbol.Execution.ErrorMsg);
-					SymbolHandle := 0;
-					State := sInit;
-				END_IF
-			END_IF
-		END_IF
+                IF RetryCounter.Value = 0 THEN
+                    RetryCounter.Inc();
+                    SymbolHandle := 0;
+                    State        := sGetHandle;
+                ELSE
+                    _Execution.SetError(AdsReadWrite_ToSymbol.Execution.ErrorMsg);
+                    SymbolHandle := 0;
+                    State        := sInit;
+                END_IF
+            END_IF
+        END_IF
 
-    sReleaseHandle:    
+    sReleaseHandle:
         IF StateMonitor.Changed THEN
             // Release the symbol handle......
-            AdsWrite_ReleaseSymHandle.Execute(
-                AmsNetId        := AmsNetId, 
-                Port            := Port, 
-                IndexGroup      := ADSIGRP_SYM_RELEASEHND, 
-                IndexOffset     := SymbolHandle, 
-                DataLength      := 0, 
-                DataAddress     := 0);
+            AdsWrite_ReleaseSymHandle.Execute(AmsNetId    := AmsNetId,
+                                              Port        := Port,
+                                              IndexGroup  := ADSIGRP_SYM_RELEASEHND,
+                                              IndexOffset := SymbolHandle,
+                                              DataLength  := 0,
+                                              DataAddress := 0);
         ELSE
             IF AdsWrite_ReleaseSymHandle.Execution.Done THEN
                 // Handle write error to the symbol...
@@ -124,16 +122,16 @@ CASE State OF
                     _Execution.SetError(AdsReadWrite_ToSymbol.Execution.ErrorMsg);
                 ELSE
                     _Execution.SetDone();
-				END_IF
+                END_IF
                 SymbolHandle := 0;
-                State := sInit;
+                State        := sInit;
             ELSIF AdsWrite_ReleaseSymHandle.Execution.Error THEN
                 // Handle release handle error...
                 _Execution.SetError(AdsWrite_ReleaseSymHandle.Execution.ErrorMsg);
                 SymbolHandle := 0;
-                State := sInit;
-			END_IF
-		END_IF
+                State        := sInit;
+            END_IF
+        END_IF
 
 END_CASE
 
@@ -145,38 +143,40 @@ AdsWrite_ReleaseSymHandle();
     <Method Name="Execute" Id="{8ce67ebf-85ed-4725-8a35-b4f7e3fd3524}">
       <Declaration><![CDATA[METHOD Execute : BOOL
 VAR_INPUT
-	AmsNetId : T_AmsNetId;
-	Port : T_AmsPort;
-	SymbolName : STRING;
-    ReadDataAddress : PVOID;
-    ReadDataLength : UDINT;
+    AmsNetId         : T_AmsNetId;
+    Port             : T_AmsPort;
+    SymbolName       : T_MaxString;
+    ReadDataAddress  : PVOID;
+    ReadDataLength   : UDINT;
     WriteDataAddress : PVOID;
-    WriteDataLength : UDINT;
-    KeepSymbolHandle    : BOOL;  
+    WriteDataLength  : UDINT;
+    KeepSymbolHandle : BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.AmsNetId          := AmsNetId;
-THIS^.Port              := Port;
-THIS^.SymbolName        := SymbolName;
-THIS^.ReadDataAddress   := ReadDataAddress;
-THIS^.ReadDataLength    := ReadDataLength;
-THIS^.WriteDataAddress  := WriteDataAddress;
-THIS^.WriteDataLength   := WriteDataLength;
-THIS^.KeepSymbolHandle  := KeepSymbolHandle;
+        <ST><![CDATA[THIS^.AmsNetId         := AmsNetId;
+THIS^.Port             := Port;
+THIS^.SymbolName       := SymbolName;
+THIS^.ReadDataAddress  := ReadDataAddress;
+THIS^.ReadDataLength   := ReadDataLength;
+THIS^.WriteDataAddress := WriteDataAddress;
+THIS^.WriteDataLength  := WriteDataLength;
+THIS^.KeepSymbolHandle := KeepSymbolHandle;
 
 Execute := _Execution.Start();
 ]]></ST>
       </Implementation>
     </Method>
     <Property Name="Execution" Id="{4f62956f-a162-0900-311d-9b0770251f12}">
-      <Declaration><![CDATA[PROPERTY Execution : I_Execution]]></Declaration>
+      <Declaration><![CDATA[PROPERTY Execution : I_Execution
+]]></Declaration>
       <Get Name="Get" Id="{5a2dab17-8cca-0dc8-3846-dd0376db8641}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Execution := _Execution;]]></ST>
+          <ST><![CDATA[Execution := _Execution;
+]]></ST>
         </Implementation>
       </Get>
     </Property>

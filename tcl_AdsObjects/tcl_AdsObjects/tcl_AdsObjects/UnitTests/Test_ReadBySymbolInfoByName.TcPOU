@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Test_ReadBySymbolInfoByName" Id="{7cbb7033-6788-0f7f-0edd-e3926bf30a2e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_ReadBySymbolInfoByName EXTENDS T_UnitTestBase
+VAR
+    AdsPort                 : UINT;
+    AdsReadSymbolInfoByName : T_AdsReadSymbolInfoByName;
+    AdsReadSymbolName       : T_AdsReadSymbolName;
+    SymbolUnderTest         : LREAL; // Comment describing Symbol
+    State                   : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Init" Id="{763228a5-9c3c-08d2-18b0-3b4e3d4c8328}">
+      <Declaration><![CDATA[METHOD Init
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunTest" Id="{55b216c1-c25d-00b2-2b79-a3d67b2ef614}">
+      <Declaration><![CDATA[{attribute 'analysis' := '-33'} // inhibit unused variable warning
+METHOD RunTest
+VAR_OUTPUT
+    TestCompleted : BOOL;
+    TestFailed    : BOOL;
+END_VAR
+VAR_INST
+    SymbolName : T_MaxString;
+    ReadResult : INT;
+    SymbolInfo : SYMINFOSTRUCT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        AdsPort    := _AppInfo.AdsPort;
+        ReadResult := 0;
+        AdsReadSymbolName.Execute(Address := ADR(SymbolUnderTest),
+                                  Length  := SIZEOF(SymbolUnderTest),
+                                  PlcPort := AdsPort);
+        State := 10;
+
+    10:
+        IF NOT AdsReadSymbolName.Execution.Busy THEN
+            SymbolName := AdsReadSymbolName.SymbolName;
+            State      := 20;
+        END_IF
+
+    20:
+        AdsReadSymbolInfoByName.Execute(SymbolName := SymbolName,
+                                        PlcPort    := AdsPort);
+
+        State := 30;
+
+    30:
+        IF NOT AdsReadSymbolInfoByName.Execution.Busy THEN
+            SymbolInfo := AdsReadSymbolInfoByName.SymbolInfo;
+            State      := 40;
+        END_IF
+
+    40:
+        AssertTrue(Source    := TestName,
+                   Condition := SymbolInfo.adsDataType = ADSDATATYPEID.ADST_REAL64,
+                   Message   := 'adsDataType not correct',
+                   Failed    => TestFailed);
+        IF TestFailed THEN
+            TestCompleted := TRUE;
+            RETURN;
+        END_IF
+
+        AssertTrue(Source    := TestName,
+                   Condition := SymbolInfo.byteSize = 8,
+                   Message   := 'byteSize not correct',
+                   Failed    => TestFailed);
+        IF TestFailed THEN
+            TestCompleted := TRUE;
+            RETURN;
+        END_IF
+
+        AssertTrue(Source    := TestName,
+                   Condition := SymbolInfo.symDataType = 'LREAL',
+                   Message   := 'symDataType not correct',
+                   Failed    => TestFailed);
+        IF TestFailed THEN
+            TestCompleted := TRUE;
+            RETURN;
+        END_IF
+
+        AssertTrue(Source    := TestName,
+                   Condition := SymbolInfo.symComment = ' Comment describing Symbol',
+                   Message   := 'symComment not correct',
+                   Failed    => TestFailed);
+        IF TestFailed THEN
+            TestCompleted := TRUE;
+            RETURN;
+        END_IF
+
+        TestCompleted := TRUE;
+END_CASE
+
+AdsReadSymbolInfoByName();
+AdsReadSymbolName();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

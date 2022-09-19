@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Test_ReadByIndexGroupAndOffset" Id="{698aa5b0-bed2-026a-0e35-6d5e85e3c208}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_ReadByIndexGroupAndOffset EXTENDS T_UnitTestBase
+VAR
+    AdsPort               : UINT;
+    AdsRead               : T_AdsRead;
+    ValueToRead AT %MB100 : INT;
+    State                 : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Init" Id="{25a32580-6c52-0063-31ba-3b5e61bc9b27}">
+      <Declaration><![CDATA[METHOD Init
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunTest" Id="{3944bf58-a563-04f3-1c88-ac0756ae33a2}">
+      <Declaration><![CDATA[{attribute 'analysis' := '-33'} // inhibit unused variable warning
+METHOD RunTest
+VAR_OUTPUT
+    TestCompleted : BOOL;
+    TestFailed    : BOOL;
+END_VAR
+VAR_INST
+    SymbolName : T_MaxString;
+    ReadResult : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        AdsPort     := _AppInfo.AdsPort;
+        ValueToRead := 1234;
+        ReadResult  := 0;
+        AdsRead.Execute(AmsNetId    := '',
+                        Port        := AdsPort,
+                        IndexGroup  := 16#4020,
+                        IndexOffset := 100,
+                        DataLength  := SIZEOF(ReadResult),
+                        DataAddress := ADR(ReadResult));
+
+        State := 10;
+
+    10:
+        IF NOT AdsRead.Execution.Busy THEN
+            State := 20;
+        END_IF
+
+    20:
+        AssertTrue(Source    := TestName,
+                   Condition := (ReadResult = 1234),
+                   Message   := 'Read result <> 1234',
+                   Failed    => TestFailed);
+
+        TestCompleted := TRUE;
+END_CASE
+
+AdsRead();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

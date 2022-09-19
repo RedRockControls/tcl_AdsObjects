@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Test_WriteBySymbolName" Id="{dcbc4d7e-fb03-0eec-1cb4-49d649bb50cf}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_WriteBySymbolName EXTENDS T_UnitTestBase
+VAR
+    AdsPort              : UINT;
+    AdsWriteBySymbolName : T_AdsWriteBySymbolName;
+    AdsReadSymbolName    : T_AdsReadSymbolName;
+    WriteResult          : INT; // We are writing to this variable by its symbol name
+    State                : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Init" Id="{bffe7e9e-d0ce-0eb3-1c68-417530939481}">
+      <Declaration><![CDATA[METHOD Init
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunTest" Id="{1a637cd7-94d5-0958-2bd4-87a7aaee2dab}">
+      <Declaration><![CDATA[{attribute 'analysis' := '-33'} // inhibit unused variable warning
+METHOD RunTest
+VAR_OUTPUT
+    TestCompleted : BOOL;
+    TestFailed    : BOOL;
+END_VAR
+VAR_INST
+    SymbolName   : T_MaxString;
+    ValueToWrite : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        AdsPort      := _AppInfo.AdsPort;
+        ValueToWrite := 3456;
+        WriteResult  := 0;
+        AdsReadSymbolName.Execute(Address := ADR(WriteResult),
+                                  Length  := SIZEOF(WriteResult),
+                                  PlcPort := AdsPort);
+        State := 10;
+
+    10:
+        IF NOT AdsReadSymbolName.Execution.Busy THEN
+            SymbolName := AdsReadSymbolName.SymbolName;
+            State      := 20;
+        END_IF
+
+    20:
+        AdsWriteBySymbolName.Execute(AmsNetId         := '',
+                                     Port             := AdsPort,
+                                     SymbolName       := SymbolName,
+                                     WriteDataAddress := ADR(ValueToWrite),
+                                     WriteDataLength  := SIZEOF(ValueToWrite),
+                                     KeepSymbolHandle := FALSE);
+
+        State := 30;
+
+    30:
+        IF NOT AdsWriteBySymbolName.Execution.Busy THEN
+            State := 40;
+        END_IF
+
+    40:
+        AssertTrue(Source    := TestName,
+                   Condition := (WriteResult = 3456),
+                   Message   := 'WriteResult <> 3456',
+                   Failed    => TestFailed);
+
+        TestCompleted := TRUE;
+END_CASE
+
+AdsWriteBySymbolName();
+AdsReadSymbolName();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

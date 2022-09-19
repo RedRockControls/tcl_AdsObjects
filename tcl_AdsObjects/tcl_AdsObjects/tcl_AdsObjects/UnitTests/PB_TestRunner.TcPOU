@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="PB_TestRunner" Id="{fa6e722f-1558-004a-1db2-3e3393d796db}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PB_TestRunner
+VAR
+    TestSuite_AdsTests : TestSuite_AdsTests;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestSuite_AdsTests();
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

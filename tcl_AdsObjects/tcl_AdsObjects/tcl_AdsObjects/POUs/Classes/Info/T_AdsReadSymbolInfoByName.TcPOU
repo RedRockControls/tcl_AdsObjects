@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="T_AdsReadSymbolInfoByName" Id="{3b42eb89-cf41-4336-a5c1-92150107c03f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_AdsReadSymbolInfoByName
+VAR
+    _Execution             : T_Execution;
+    PLC_ReadSymInfoByName1 : PLC_ReadSymInfoByName;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF _Execution.Aborting THEN
+    _Execution.SetAborted();
+END_IF
+
+PLC_ReadSymInfoByName1(NETID   := '',
+                       PORT    :=,
+                       SYMNAME :=,
+                       START   := _Execution.Starting,
+                       TMOUT   := T#2S,
+                       BUSY    =>,
+                       ERR     =>,
+                       ERRID   =>,
+                       SYMINFO =>);
+
+IF _Execution.Starting THEN
+    _Execution.SetBusy();
+END_IF
+
+IF _Execution.Busy AND NOT PLC_ReadSymInfoByName1.BUSY THEN
+    IF PLC_ReadSymInfoByName1.ERR THEN
+        _Execution.SetError(F_ErrorIdToString(PLC_ReadSymInfoByName1.ERRID));
+    ELSE
+        _Execution.SetDone();
+    END_IF
+END_IF
+]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{ed501254-c594-4cdf-bcbd-82efee415bdb}">
+      <Declaration><![CDATA[METHOD Execute : BOOL
+VAR_INPUT
+    SymbolName : T_MaxString;
+    PlcPort    : UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[PLC_ReadSymInfoByName1.SYMNAME := SymbolName;
+PLC_ReadSymInfoByName1.PORT    := PlcPort;
+Execute                        := THIS^._Execution.Start();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Execution" Id="{51d5157e-fc68-4178-bd44-7fb5aeb2d755}">
+      <Declaration><![CDATA[PROPERTY Execution : I_Execution
+]]></Declaration>
+      <Get Name="Get" Id="{562edb79-f427-4bf9-8929-784cd0746606}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Execution := _Execution;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SymbolInfo" Id="{f1619a83-55b6-4a00-b5eb-c75f59ed2faf}">
+      <Declaration><![CDATA[PROPERTY SymbolInfo : REFERENCE TO SYMINFOSTRUCT
+]]></Declaration>
+      <Get Name="Get" Id="{6c9adce9-829e-4794-9b19-eda9be1ade7b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SymbolInfo REF= PLC_ReadSymInfoByName1.SYMINFO;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

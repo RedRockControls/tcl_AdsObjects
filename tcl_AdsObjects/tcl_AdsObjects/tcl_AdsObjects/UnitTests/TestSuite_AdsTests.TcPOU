@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="TestSuite_AdsTests" Id="{7e00111d-e17f-0889-2a5c-53d03e07bc11}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TestSuite_AdsTests
+VAR
+    TestRunner : T_TestRunner;
+    // Inhibit unused variable warning...                                                        
+    {attribute 'analysis' := '-33'} Test_ReadSymbolName                      : Test_ReadSymbolName(TestRunner);
+    {attribute 'analysis' := '-33'} Test_ReadBySymbolName                    : Test_ReadBySymbolName(TestRunner);
+    {attribute 'analysis' := '-33'} Test_ReadBySymbolName_KeepingHandle      : Test_ReadBySymbolName_KeepingHandle(TestRunner);
+    {attribute 'analysis' := '-33'} Test_ReadWriteBySymbolName               : Test_ReadWriteBySymbolName(TestRunner);
+    {attribute 'analysis' := '-33'} Test_ReadWriteBySymbolName_KeepingHandle : Test_ReadWriteBySymbolName_KeepingHandle(TestRunner);
+    {attribute 'analysis' := '-33'} Test_WriteBySymbolName                   : Test_WriteBySymbolName(TestRunner);
+    {attribute 'analysis' := '-33'} Test_WriteBySymbolName_KeepingHandle     : Test_WriteBySymbolName_KeepingHandle(TestRunner);
+    {attribute 'analysis' := '-33'} Test_ReadBySymbolInfoByName              : Test_ReadBySymbolInfoByName(TestRunner);
+    {attribute 'analysis' := '-33'} Test_ReadByIndexGroupAndOffset           : Test_ReadByIndexGroupAndOffset(TestRunner);
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TestRunner(TestSuiteName := 'TestSuite_AdsTests');
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

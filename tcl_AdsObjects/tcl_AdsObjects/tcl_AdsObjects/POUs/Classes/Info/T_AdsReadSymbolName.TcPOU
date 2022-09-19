@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="T_AdsReadSymbolName" Id="{a06e58d8-7df1-492c-b181-44bbaabfeb2e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_AdsReadSymbolName
+VAR
+    _Execution    : T_Execution;
+    _Address      : PVOID;
+    _Length       : UDINT;
+    _PlcPort      : UINT;
+    _SymbolName   : T_MaxString;
+    RawSymbolInfo : ST_RawSymbolInfo;
+    AdsRdWrt1     : ADSRDWRTEX;
+END_VAR
+VAR CONSTANT
+    PLCADS_IGR_SYMNAME_BY_ADDR_SIZE : UDINT := 16#40A1;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF _Execution.Aborting THEN
+    _Execution.SetAborted();
+END_IF
+
+IF _Execution.Starting THEN
+    RawSymbolInfo.Address := _Address;
+    RawSymbolInfo.Length  := _Length;
+    MEMSET(ADR(_SymbolName), 0, SIZEOF(_SymbolName));
+END_IF
+
+AdsRdWrt1(NETID    :=,
+          PORT     := _PlcPort,
+          IDXGRP   := PLCADS_IGR_SYMNAME_BY_ADDR_SIZE,
+          IDXOFFS  := 0,
+          WRITELEN := SIZEOF(RawSymbolInfo),
+          READLEN  := SIZEOF(SymbolName),
+          SRCADDR  := ADR(RawSymbolInfo),
+          DESTADDR := ADR(_SymbolName),
+          WRTRD    := _Execution.Starting,
+          TMOUT    := T#2s,
+          BUSY     =>,
+          ERR      =>,
+          ERRID    =>,
+          COUNT_R  =>);
+
+IF _Execution.Starting THEN
+    _Execution.SetBusy();
+END_IF
+
+IF _Execution.Busy AND NOT AdsRdWrt1.BUSY THEN
+    IF AdsRdWrt1.ERR THEN
+        _Execution.SetError(F_ErrorIdToString(AdsRdWrt1.ERRID));
+    ELSE
+        _Execution.SetDone();
+    END_IF
+END_IF
+]]></ST>
+    </Implementation>
+    <Method Name="Execute" Id="{73bfe87b-bccd-42d1-9bad-69c46fadc2c8}">
+      <Declaration><![CDATA[METHOD Execute : BOOL
+VAR_INPUT
+    Address : PVOID;
+    Length  : UDINT;
+    PlcPort : UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._Address    := Address;
+THIS^._Length     := Length;
+THIS^._PlcPort    := PlcPort;
+THIS^._SymbolName := '';
+Execute           := THIS^._Execution.Start();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Execution" Id="{a74ff676-67b1-4df5-8298-a43466603fee}">
+      <Declaration><![CDATA[PROPERTY Execution : I_Execution
+]]></Declaration>
+      <Get Name="Get" Id="{de00948e-9013-4663-8e5e-de0532b28a1a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Execution := _Execution;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SymbolName" Id="{35eff76b-99f2-4e8e-9c94-e446dab291be}">
+      <Declaration><![CDATA[PROPERTY SymbolName : T_MaxString
+]]></Declaration>
+      <Get Name="Get" Id="{2866d0fd-df03-4660-80ce-dd07c68ee1ce}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SymbolName := _SymbolName;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="PB_TestRunner" Id="{e566a739-f2ba-00f7-3db7-11a111029159}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PB_TestRunner
+VAR
+    Run : BOOL := TRUE;
+
+    TestRunner : T_TestRunner('tcl_AdsObjects');
+    
+    Test_ReadBySymbolName                    : tcl_AdsObjects.Test_ReadBySymbolName(AdsPort := _AppInfo.AdsPort);
+    Test_ReadWriteBySymbolName               : tcl_AdsObjects.Test_ReadWriteBySymbolName(AdsPort := _AppInfo.AdsPort);
+    Test_WriteBySymbolName                   : tcl_AdsObjects.Test_WriteBySymbolName(AdsPort := _AppInfo.AdsPort);
+    Test_ReadBySymbolName_KeepingHandle      : tcl_AdsObjects.Test_ReadBySymbolName_KeepingHandle(AdsPort := _AppInfo.AdsPort);
+    Test_ReadWriteBySymbolName_KeepingHandle : tcl_AdsObjects.Test_ReadWriteBySymbolName_KeepingHandle(AdsPort := _AppInfo.AdsPort);
+    Test_WriteBySymbolName_KeepingHandle     : tcl_AdsObjects.Test_WriteBySymbolName_KeepingHandle(AdsPort := _AppInfo.AdsPort);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF Run THEN
+    Run := FALSE;
+    TestRunner.Initialise();
+    TestRunner.AddTest(Test_ReadBySymbolName);
+    TestRunner.AddTest(Test_ReadWriteBySymbolName);
+    TestRunner.AddTest(Test_WriteBySymbolName);
+    TestRunner.AddTest(Test_ReadBySymbolName_KeepingHandle);
+    TestRunner.AddTest(Test_ReadWriteBySymbolName_KeepingHandle);
+    TestRunner.AddTest(Test_WriteBySymbolName_KeepingHandle);
+	TestRunner.Execute();
+END_IF
+
+TestRunner();
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

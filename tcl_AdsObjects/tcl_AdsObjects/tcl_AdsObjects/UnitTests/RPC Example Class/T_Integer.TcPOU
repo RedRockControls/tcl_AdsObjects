@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="T_Integer" Id="{3d96099e-d03a-0a7c-17f3-8d23f37e5358}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'hide'}
+{attribute 'reflection'}
+FUNCTION_BLOCK T_Integer
+VAR
+    Value : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Inc" Id="{a7bd1891-50ab-0801-2d64-d490c718e3c7}">
+      <Declaration><![CDATA[{attribute 'TcRpcEnable'}
+METHOD Inc : INT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Value := Value + 1;
+Inc   := Value;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Init" Id="{7deb6d59-8977-0489-2653-46330f894495}">
+      <Declaration><![CDATA[METHOD Init
+VAR_INPUT
+    Value : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.Value := Value;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

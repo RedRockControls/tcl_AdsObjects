@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="Test_ReadSymbolName" Id="{abc1b376-9db4-0b94-0c70-36a470cc2ce7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Test_ReadSymbolName EXTENDS T_UnitTestBase
+VAR
+    AdsPort                                                                                 : UINT;
+    AdsReadSymbolName                                                                       : T_AdsReadSymbolName;
+    SymbolWithAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongName : INT;
+    State                                                                                   : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Init" Id="{6ea540b1-c94b-0066-0874-b16775e56ca7}">
+      <Declaration><![CDATA[METHOD Init
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RunTest" Id="{9c37cd69-1787-0e89-26c6-0bbee0778731}">
+      <Declaration><![CDATA[{attribute 'analysis' := '-33'} // inhibit unused variable warning
+METHOD RunTest
+VAR_OUTPUT
+    TestCompleted : BOOL;
+    TestFailed    : BOOL;
+END_VAR
+VAR_INST
+    SymbolName : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE State OF
+    0:
+        AdsPort := _AppInfo.AdsPort;
+        AdsReadSymbolName.Execute(Address := ADR(SymbolWithAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongName),
+                                  Length  := SIZEOF(SymbolWithAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongName),
+                                  PlcPort := AdsPort);
+        State := 10;
+
+    10:
+        IF NOT AdsReadSymbolName.Execution.Busy THEN
+            SymbolName := AdsReadSymbolName.SymbolName;
+            State      := 20;
+        END_IF
+
+    20:
+        AssertTrue(Source    := TestName,
+                   Condition := (SymbolName = 'PB_TestRunner.TestSuite_AdsTests.Test_ReadSymbolName.SymbolWithAVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongName'),
+                   Message   := 'SymbolName read incorrectly',
+                   Failed    => TestFailed);
+
+        TestCompleted := TRUE;
+END_CASE
+
+AdsReadSymbolName();
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
