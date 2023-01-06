@@ -61,7 +61,6 @@
 		</System>
 		<Plc>
 			<Project File="tcl_AdsObjects.xti"/>
-			<Project File="TestPlc.xti"/>
 		</Plc>
 	</Project>
 </TcSmProject>
